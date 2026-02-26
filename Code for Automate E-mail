@@ -1,0 +1,79 @@
+function sendEmails() {
+
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1");
+  var data = sheet.getDataRange().getValues();
+
+  // PDF File
+  var pdfFile = DriveApp.getFileById("1F3OmY9eqCCGePikCS2Mw3sfLfSAgefc1");
+  var pdfBlob = pdfFile.getBlob();
+
+  // Logo File
+  var logoFile = DriveApp.getFileById("1FLUmO5VQbWRXjVOI7z7gwZ1iypEYLncE");
+  var logoBlob = logoFile.getBlob();
+
+  for (var i = 1; i < data.length; i++) {
+
+    var email = data[i][0];
+    var agency = data[i][1];
+
+    var subject = agency + "Test Email Sample";
+
+    var body = `
+<div style="font-family: Arial, sans-serif; font-size:14px; color:#333; line-height:1.6;">
+
+Hi Agency Team,<br><br>
+
+Let’s be honest: The search bar is where conversion goes to die.<br>
+
+Most agencies are still stuck optimizing filters, but the future of your fashion roster is 
+<strong>no search bar.</strong> 
+I’m Ayush from 
+<a href="https://styailist.com/" style="color:#1a73e8; text-decoration:none;"><strong>Styailist</strong></a>, 
+and we’ve built the AI assistant that actually thinks like a human stylist—matching products to a customer’s body shape and color profile in real-time.
+<br><br>
+
+<strong>The Win-Win:</strong>
+
+<ul style="margin-top:8px; margin-bottom:16px;">
+  <li><strong>For your clients:</strong> Lower returns and higher AOV.</li>
+  <li><strong>For ${agency}:</strong> 20% recurring revenue for every brand you refer, for life.</li>
+</ul>
+
+I’ve filmed a 60-second demo of the "No Search" future here: 
+<a href="https://www.youtube.com/watch?v=jSxUqSp5Z8E&t=44s" style="color:#1a73e8; text-decoration:none;">
+<strong>Watch the 60s Demo</strong>
+</a>
+<br><br>
+
+I’m booking 
+<a href="https://calendly.com/ayush-srivastava-styailist/new-meeting" style="color:#1a73e8; text-decoration:none;">
+<strong>15-minute</strong>
+</a> 
+partner briefings for next <strong>Tuesday and Wednesday</strong>.<br>
+Which morning works best to see if this fits your 2026 roadmap?
+
+<br>
+--<br>
+
+Regards,<br>
+Ayush Srivastava\<br>
+Business Development Executive<br>
+<a href="https://styailist.com/" style="color:#1a73e8; text-decoration:none;">
+Styailist
+</a>
+
+</div>
+`;
+
+    GmailApp.sendEmail(email, subject, "", {
+      htmlBody: body + `
+<img src="cid:logoImage" width="90">
+`,
+      attachments: [pdfBlob],
+      inlineImages: {
+        logoImage: logoBlob
+      }
+    });
+
+  }
+}
